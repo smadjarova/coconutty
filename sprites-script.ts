@@ -9,84 +9,96 @@ import {
 
 const app: Application = new Application(960, 480);
 document.body.appendChild(app.view);
-
+// creates the background
 let background: Sprite = Sprite.fromImage("./beach.png");
 app.stage.addChild(background);
 
-let tajika: Sprite = Sprite.fromImage("./tajika1.png");
+// creates the main character and sets the scale 
+let tajika: Sprite = Sprite.fromImage("./tajika2.png");
 tajika.scale.x = 1;
 tajika.scale.y = 1;
+// puts the location of tajika on screen 
 tajika.x = 480;
 tajika.y = 230;
+// adds tajika to the stage 
 app.stage.addChild(tajika);
 
-window.onkeydown = (e: KeyboardEvent): void => {
-    
-    // if (e) {
-    //     let movement = true
-    //     if (movement) {
-    //      tajika = Sprite.fromImage("./tajika1.png");
-    //     } 
-    //     else {
-    //         tajika = Sprite.fromImage("./tajika2.png");
-    //     }
-    // }
+// falling animation/hit boxes 
 
-    const LEFT: number = 37;
-    const RIGHT: number = 39;
-    const STEP: number = 20;
-    if (e.keyCode === LEFT) {
-        tajika.x -= STEP;
-    } else if (e.keyCode === RIGHT) {
-        tajika.x += STEP;
-    }
-};
+/*
+   You'll notice our goal (or cpuhat) is also a Sprite, we'll describe
+   how we're going to differentiate these objects later. 
+*/
 
-class CoconutLikeObject {
 
-    numberOfCoconut: number;
-    typeOfCoconut: Sprite;
-
-    constructor(z: number, picture: string) {
-        this.numberOfCoconut = z;
-        this.typeOfCoconut = Sprite.fromImage(picture);
-        this.typeOfCoconut.scale.x = 0.40;
-        this.typeOfCoconut.scale.y = 0.40;
+// creates a new class for the objects 
+class Coconut {
+    sprite: Sprite;
+    direction: number = 1;
+    constructor(sprite: Sprite) {
+        this.sprite = sprite;
     }
 }
 
-let coconutBrown = new CoconutLikeObject(0, "./coconutBrown.png");
-coconutBrown.typeOfCoconut.x = 450;
-coconutBrown.typeOfCoconut.y = 200;
-app.stage.addChild(coconutBrown.typeOfCoconut);
 
-let coconutBowlingBall = new CoconutLikeObject(1, "./coconutBowlingBall.png");
-coconutBowlingBall.typeOfCoconut.x = 400;
-coconutBowlingBall.typeOfCoconut.y = 200;
-app.stage.addChild(coconutBowlingBall.typeOfCoconut);
+// abbreviating the objects to a single character
+// bc is the brown coconut
+let bc: Coconut[] = [];
 
-let coconutBomb = new CoconutLikeObject(2, "./coconutBomb.png");
-coconutBomb.typeOfCoconut.x = 350;
-coconutBomb.typeOfCoconut.y = 200;
-app.stage.addChild(coconutBomb.typeOfCoconut);
+// updates every 60 seconds 
+// this creates the coconuts falling on repeat
+// NEEDED: for the x variable to change position
+app.ticker.add((delta: number): void => {
+    for (let i: number = 0; i < 1; i++) {
+        let coconutBrown: Sprite = Sprite.fromImage("./coconutBrown.png");
 
-let coconutGolden = new CoconutLikeObject(2, "./coconutGolden.png");
-coconutGolden.typeOfCoconut.x = 300;
-coconutGolden.typeOfCoconut.y = 200;
-app.stage.addChild(coconutGolden.typeOfCoconut);
+        // scales the image
+        coconutBrown.scale.x = .40;
+        coconutBrown.scale.y = .40;
 
-let coconutPokeball = new CoconutLikeObject(2, "./coconutPokeball.png");
-coconutPokeball.typeOfCoconut.x = 250;
-coconutPokeball.typeOfCoconut.y = 200;
-app.stage.addChild(coconutPokeball.typeOfCoconut);
+        // sets location, i.e needs to change location
+        coconutBrown.x = 450 + 60 * i;
+        coconutBrown.y = 200;
+        
+        // Creates a new Coconut
+        let coconut: Coconut = new Coconut(coconutBrown);
+        bc[bc.length] = coconut;
+
+        // adds to the screen 
+        app.stage.addChild(coconutBrown);
+    }
+
+    for (let i: number = 0; i < bc.length; i++) {
+        // sets the constant to equal to the object at index i, so it's changing coco by moving through
+        // each index of the array 
+        const coco: Coconut = bc[i];
+        // takes the individual object in the Coconut array and then takes the direction and subtracts 5 each time
+        coco.sprite.y += 5 * coco.direction;
+        
+        // removes sprite object once it's below screen 
+        if (coco.sprite.y >= 512) {
+            app.stage.removeChild(coco[i]);
+        }
+
+       
+    }
+    // let coconutBomb: Sprite = Sprite.fromImage("./coconutBomb.png");
+    // cpuhat.scale.x = 0.1;
+    // cpuhat.scale.y = 0.1;
+    // cpuhat.x = 450;
+    // cpuhat.y = 240;
+    // app.stage.addChild(cpuhat);
 
 
-// let coconutBomb: Sprite = Sprite.fromImage("./coconutBomb.png");
-// cpuhat.scale.x = 0.1;
-// cpuhat.scale.y = 0.1;
-// cpuhat.x = 450;
-// cpuhat.y = 240;
-// app.stage.addChild(cpuhat);
-
-
-
+    window.onkeydown = (e: KeyboardEvent): void => {
+        const LEFT: number = 37;
+        const RIGHT: number = 39;
+        const STEP: number = 20;
+        if (e.keyCode === LEFT) {
+            tajika.x -= STEP;
+        } else if (e.keyCode === RIGHT) {
+            tajika.x += STEP;
+        }
+    };
+}
+);
