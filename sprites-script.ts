@@ -1,3 +1,7 @@
+// Objectives: 
+// 1: Make the objects generate one at a time [done]
+// 2: Make hitboxes
+// 3: Put a score board
 import {
     Sprite,
     Application,
@@ -36,7 +40,7 @@ window.onkeydown = (e: KeyboardEvent): void => {
         tajika.x += STEP;
     }
 };
-    // creates CoconutLikeObject
+// creates CoconutLikeObject
 class CoconutLikeObject {
 
     // creates class  properties
@@ -52,34 +56,32 @@ class CoconutLikeObject {
         this.direction = 1;
     }
 }
-    // creates new coconuts 
+// creates new Brown Coconut
 let coconutBrown = new CoconutLikeObject(0, "./coconutBrown.png");
 coconutBrown.typeOfCoconut.x = 450;
 coconutBrown.typeOfCoconut.y = 0;
 
-    // creates Bowling Ball
+// creates Bowling Ball
 let coconutBowlingBall = new CoconutLikeObject(1, "./coconutBowlingBall.png");
 coconutBowlingBall.typeOfCoconut.x = 400;
 coconutBowlingBall.typeOfCoconut.y = 0;
-app.stage.addChild(coconutBowlingBall.typeOfCoconut);
 
-    //creates CoconutBomb
+
+// creates CoconutBomb
 let coconutBomb = new CoconutLikeObject(2, "./coconutBomb.png");
 coconutBomb.typeOfCoconut.x = 350;
 coconutBomb.typeOfCoconut.y = 0;
-app.stage.addChild(coconutBomb.typeOfCoconut);
 
-    //creates coconutGolden
+
+// creates coconutGolden
 let coconutGolden = new CoconutLikeObject(3, "./coconutGolden.png");
 coconutGolden.typeOfCoconut.x = 300;
 coconutGolden.typeOfCoconut.y = 0;
-app.stage.addChild(coconutGolden.typeOfCoconut);
 
-    //creates coconutPokeball
+// creates coconutPokeball
 let coconutPokeball = new CoconutLikeObject(4, "./coconutPokeball.png");
 coconutPokeball.typeOfCoconut.x = 250;
 coconutPokeball.typeOfCoconut.y = 0;
-app.stage.addChild(coconutPokeball.typeOfCoconut);
 
 // creates array that houses all the coconut objects
 let bc: CoconutLikeObject[] = [];
@@ -87,47 +89,66 @@ let bc: CoconutLikeObject[] = [];
 // app.ticker.minFPS = 900000;
 
 // works for index
-let i = 0 ;
+let i = 0;
 // counter variable that slows down how app ticker runs the coconut creator/ dictates x coordinates
 let u = 0;
+
+let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
+    let ab: Rectangle = a.getBounds();
+    let bb: Rectangle = b.getBounds();
+    return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
+};
+
 app.ticker.add((delta: number): void => {
-    
+
     let maxCoconut: number = 4;
     let minCoconut: number = 0;
     // for (let i = 0; i <= 100; i++) {
- if (u >= 300) {
-        //creates random varibales for the coconut types     
-        let randomcoconutValue: number = Math.floor(Math.random() * (maxCoconut - minCoconut +1 )) + minCoconut;
-        
+    if (u >= 300) {
+        // creates random varibales for the coconut types     
+        let randomcoconutValue: number = Math.floor(Math.random() * (maxCoconut - minCoconut + 1)) + minCoconut;
+
         // creates random variables for the x position
         let minchangex = 0;
         let maxchangex = 960;
-        let randomxValue: number = Math.floor(Math.random() * (maxchangex - minchangex +1 )) + minchangex;
+        let randomxValue: number = Math.floor(Math.random() * (maxchangex - minchangex + 1)) + minchangex;
+
         if (randomcoconutValue === 0) {
-        app.stage.addChild(coconutBrown.typeOfCoconut);
-        bc[i] = coconutBrown;
-        bc[i].typeOfCoconut.x = randomxValue;
-        //add brown cocunut to bc
+            app.stage.addChild(coconutBrown.typeOfCoconut);
+            bc[i] = coconutBrown;
+            bc[i].typeOfCoconut.x = randomxValue;
+            // add brown cocunut to bc  
+            if (isColliding(tajika, coconutBrown.typeOfCoconut)) {
+               app.stage.removeChild(coconutBrown.typeOfCoconut); }
+
         } else if (randomcoconutValue === 1) {
             app.stage.addChild(coconutBowlingBall.typeOfCoconut);
             bc[i] = coconutBowlingBall;
-            bc[i].typeOfCoconut.x = randomxValue; 
+            bc[i].typeOfCoconut.x = randomxValue;
+            if (isColliding(tajika, coconutBowlingBall.typeOfCoconut)) {
+                app.stage.removeChild(coconutBowlingBall.typeOfCoconut); }
         } else if (randomcoconutValue === 2) {
             app.stage.addChild(coconutBomb.typeOfCoconut);
             bc[i] = coconutBomb;
             bc[i].typeOfCoconut.x = randomxValue;
+            if (isColliding(tajika, coconutBomb.typeOfCoconut)) {
+                app.stage.removeChild(coconutBomb.typeOfCoconut); }
         } else if (randomcoconutValue === 3) {
             app.stage.addChild(coconutGolden.typeOfCoconut);
             bc[i] = coconutGolden;
             bc[i].typeOfCoconut.x = randomxValue;
+            if (isColliding(tajika, coconutGolden.typeOfCoconut)) {
+                app.stage.removeChild(coconutGolden.typeOfCoconut); }
         } else if (randomcoconutValue === 4) {
             app.stage.addChild(coconutPokeball.typeOfCoconut);
             bc[i] = coconutPokeball;
             bc[i].typeOfCoconut.x = randomxValue;
+            if (isColliding(tajika, coconutPokeball.typeOfCoconut)) {
+                app.stage.removeChild(coconutPokeball.typeOfCoconut); }
         }
 
         // bc[bc.length] = coconut;
- 
+
         // adds to the screen
         // app.stage.addChild(coconutBrown);
         i++;
@@ -142,23 +163,21 @@ app.ticker.add((delta: number): void => {
         const coco: CoconutLikeObject = bc[j];
         // takes the individual object in the Coconut array and then takes the direction and subtracts 5 each time
         coco.typeOfCoconut.y += 1.75 * coco.direction;
-       
+
         // removes sprite object once it's below screen
         if (coco.typeOfCoconut.y >= 512) {
             app.stage.removeChild(coco[j]);
         }
 
- 
-    
+
+
+
+    }
+
+
+
+
    
-       } ;
+      
 
-    
-
-let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
-    let ab: Rectangle = a.getBounds();
-    let bb: Rectangle = b.getBounds();
-    return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
-};
-
-    })
+});
