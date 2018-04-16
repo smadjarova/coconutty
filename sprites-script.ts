@@ -1,7 +1,26 @@
 // Objectives: 
 // 1: Make the objects generate one at a time [done]
+// 1.5: To make the objects generate multiple times, instead of just random order of the 5 objects.
 // 2: Make hitboxes
 // 3: Put a score board
+
+/* Bug found:
+ Won't keep randomly generating after all 5 are done
+
+ Possible solution:
+ Create an array of randomly generated numbers and 
+ then using a for loop to run through each item in it and create a new sprite
+ to create rarities put an && and depend on the index number 
+
+ Bug found with solution:
+ Because the for loop is /inside/ the for loop that slows down the ticker app
+ and making it create 100 objects then create 100 objects in less than a second is a problem
+
+ Possible solution:
+ Sync the for loop for creating the variables with the ticker app
+*/
+
+
 import {
     Sprite,
     Application,
@@ -11,6 +30,7 @@ import {
     Text,
     ticker
 } from "pixi.js";
+
 // creates backgrounds & dimensions
 const app: Application = new Application(960, 480);
 document.body.appendChild(app.view);
@@ -40,6 +60,8 @@ window.onkeydown = (e: KeyboardEvent): void => {
         tajika.x += STEP;
     }
 };
+
+
 // creates CoconutLikeObject
 class CoconutLikeObject {
 
@@ -85,6 +107,8 @@ coconutPokeball.typeOfCoconut.y = 0;
 
 // creates array that houses all the coconut objects
 let bc: CoconutLikeObject[] = [];
+
+// commented out code was to slow down the ticker app, did not work
 // app.ticker.speed = 1/1000;
 // app.ticker.minFPS = 900000;
 
@@ -93,64 +117,68 @@ let i = 0;
 // counter variable that slows down how app ticker runs the coconut creator/ dictates x coordinates
 let u = 0;
 
+// supposed to be for creating hitboxes, but unsure how to implement it
 let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
     let ab: Rectangle = a.getBounds();
     let bb: Rectangle = b.getBounds();
     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
 };
 
+// timer has to be 300 or else the loop resets too fast and the coconuts teleport to different
 app.ticker.add((delta: number): void => {
-
-    let maxCoconut: number = 4;
-    let minCoconut: number = 0;
+    /* commented out code was an attempt to work through the array of numbers
+     to generate new objects */
     // for (let i = 0; i <= 100; i++) {
+    let numberarray: number[] = [];
+    let maxnum = 5;
+    let minnum = 0;
+    let minchangex = 20;
+    let maxchangex = 940;
     if (u >= 300) {
         // creates random varibales for the coconut types     
-        let randomcoconutValue: number = Math.floor(Math.random() * (maxCoconut - minCoconut + 1)) + minCoconut;
+        for (let z = 0; z < 100; z++) {
+            let randomcoconutValue: number = Math.floor(Math.random() * Math.floor(maxnum));
+            numberarray[z] = randomcoconutValue;
+        }
 
         // creates random variables for the x position
-        let minchangex = 0;
-        let maxchangex = 960;
-        let randomxValue: number = Math.floor(Math.random() * (maxchangex - minchangex + 1)) + minchangex;
+        /* Rohaid Note: Changed the min/max values so that the image didn't show up outside of screen
+         I changed the random function from info I found online about the Math.random function
+         It slims down the function and requires less variables, so the code becomes less difficult to tangle
+         through */
+        let randomxValue: number = Math.floor(Math.random() * Math.floor(maxchangex));
 
-        if (randomcoconutValue === 0) {
+        // an attempt to create a random # as an index for the random # array for coconut type #
+        let randomnum: number = Math.floor(Math.random() * Math.floor(101));
+
+        /* set the if then statement to use the random num created
+           unfortunately, it hasn't fixed the problem */
+        if (numberarray[randomnum] === 0) {
             app.stage.addChild(coconutBrown.typeOfCoconut);
             bc[i] = coconutBrown;
             bc[i].typeOfCoconut.x = randomxValue;
             // add brown cocunut to bc  
-            if (isColliding(tajika, coconutBrown.typeOfCoconut)) {
-               app.stage.removeChild(coconutBrown.typeOfCoconut); }
-
-        } else if (randomcoconutValue === 1) {
+        } else if (numberarray[randomnum] === 1) {
             app.stage.addChild(coconutBowlingBall.typeOfCoconut);
             bc[i] = coconutBowlingBall;
             bc[i].typeOfCoconut.x = randomxValue;
-            if (isColliding(tajika, coconutBowlingBall.typeOfCoconut)) {
-                app.stage.removeChild(coconutBowlingBall.typeOfCoconut); }
-        } else if (randomcoconutValue === 2) {
+        } else if (numberarray[randomnum] === 2) {   
             app.stage.addChild(coconutBomb.typeOfCoconut);
             bc[i] = coconutBomb;
-            bc[i].typeOfCoconut.x = randomxValue;
-            if (isColliding(tajika, coconutBomb.typeOfCoconut)) {
-                app.stage.removeChild(coconutBomb.typeOfCoconut); }
-        } else if (randomcoconutValue === 3) {
+            bc[i].typeOfCoconut.x = randomxValue;  
+        } else if (numberarray[randomnum] === 3) {
             app.stage.addChild(coconutGolden.typeOfCoconut);
             bc[i] = coconutGolden;
-            bc[i].typeOfCoconut.x = randomxValue;
-            if (isColliding(tajika, coconutGolden.typeOfCoconut)) {
-                app.stage.removeChild(coconutGolden.typeOfCoconut); }
-        } else if (randomcoconutValue === 4) {
+            bc[i].typeOfCoconut.x = randomxValue;  
+        } else if (numberarray[randomnum] === 4) {
             app.stage.addChild(coconutPokeball.typeOfCoconut);
             bc[i] = coconutPokeball;
-            bc[i].typeOfCoconut.x = randomxValue;
-            if (isColliding(tajika, coconutPokeball.typeOfCoconut)) {
-                app.stage.removeChild(coconutPokeball.typeOfCoconut); }
+            bc[i].typeOfCoconut.x = randomxValue; 
         }
 
+        // commented out code but I don't know what it does
         // bc[bc.length] = coconut;
 
-        // adds to the screen
-        // app.stage.addChild(coconutBrown);
         i++;
         u = 0;
     }
@@ -177,7 +205,7 @@ app.ticker.add((delta: number): void => {
 
 
 
-   
-      
+
+
 
 });
