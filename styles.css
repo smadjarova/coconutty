@@ -1,0 +1,19 @@
+.jumbotron{
+    border-style: double;
+    text-align: center;
+    font-family: Chalkduster, fantasy;
+    font-variant: small-caps;
+    font-weight: 15000; 
+    color: rgb(65, 36, 1);
+    background-image: url("./coconutMusician.gif");
+    background-repeat: no-repeat;
+    background-size:contain;
+    background-position: right bottom;
+    margin-right: 200px;
+    background-attachment: scroll;
+
+}
+
+/* .cuteGraphicsForMusic {
+        
+} */

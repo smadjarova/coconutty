@@ -28,16 +28,26 @@ import {
     Graphics,
     DisplayObject,
     Text,
-    ticker
+    ticker,
 } from "pixi.js";
+
 
 // creates backgrounds & dimensions
 const app: Application = new Application(960, 480);
 document.body.appendChild(app.view);
 
+
 // displays background from files
 let background: Sprite = Sprite.fromImage("./beach.png");
 app.stage.addChild(background);
+
+// plays music
+let startButton: HTMLButtonElement;
+startButton = document.getElementById("Jamz?") as HTMLButtonElement;
+// startButton.onclick = (event: MouseEvent): void => {
+//     let sound = new Howl({ src: ("Africa8Bit.mp3") });
+//     sound.play();
+// };
 
 // creates/displays main character
 let tajika: Sprite = Sprite.fromImage("./tajika1.png");
@@ -124,6 +134,7 @@ let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
 };
 
+
 // timer has to be 300 or else the loop resets too fast and the coconuts teleport to different
 app.ticker.add((delta: number): void => {
     /* commented out code was an attempt to work through the array of numbers
@@ -162,18 +173,18 @@ app.ticker.add((delta: number): void => {
             app.stage.addChild(coconutBowlingBall.typeOfCoconut);
             bc[i] = coconutBowlingBall;
             bc[i].typeOfCoconut.x = randomxValue;
-        } else if (numberarray[randomnum] === 2) {   
+        } else if (numberarray[randomnum] === 2) {
             app.stage.addChild(coconutBomb.typeOfCoconut);
             bc[i] = coconutBomb;
-            bc[i].typeOfCoconut.x = randomxValue;  
+            bc[i].typeOfCoconut.x = randomxValue;
         } else if (numberarray[randomnum] === 3) {
             app.stage.addChild(coconutGolden.typeOfCoconut);
             bc[i] = coconutGolden;
-            bc[i].typeOfCoconut.x = randomxValue;  
+            bc[i].typeOfCoconut.x = randomxValue;
         } else if (numberarray[randomnum] === 4) {
             app.stage.addChild(coconutPokeball.typeOfCoconut);
             bc[i] = coconutPokeball;
-            bc[i].typeOfCoconut.x = randomxValue; 
+            bc[i].typeOfCoconut.x = randomxValue;
         }
 
         // commented out code but I don't know what it does
@@ -192,15 +203,23 @@ app.ticker.add((delta: number): void => {
         // takes the individual object in the Coconut array and then takes the direction and subtracts 5 each time
         coco.typeOfCoconut.y += 1.75 * coco.direction;
 
+        // PUT THE IS COLLIDING STATEMENTS HERE
+
         // removes sprite object once it's below screen
         if (coco.typeOfCoconut.y >= 512) {
             app.stage.removeChild(coco[j]);
         }
-
-
-
-
     }
+
+    // let soundsGood: HTMLElement = document.getElementById("clickForMusic") as HTMLElement;
+
+
+    // window.onclick = (event: MouseEvent): void => {
+    //     let sound = new Howl({src:("./Africa8Bit.mp3")});
+    //     sound.play();
+    // };
+
+
 
 
 
