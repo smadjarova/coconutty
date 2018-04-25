@@ -41,13 +41,6 @@ document.body.appendChild(app.view);
 let background: Sprite = Sprite.fromImage("./beach.png");
 app.stage.addChild(background);
 
-// plays music
-let startButton: HTMLButtonElement;
-startButton = document.getElementById("Jamz?") as HTMLButtonElement;
-// startButton.onclick = (event: MouseEvent): void => {
-//     let sound = new Howl({ src: ("Africa8Bit.mp3") });
-//     sound.play();
-// };
 
 // creates/displays main character
 let tajika: Sprite = Sprite.fromImage("./tajika1.png");
@@ -128,11 +121,11 @@ let i = 0;
 let u = 0;
 
 // supposed to be for creating hitboxes, but unsure how to implement it
-let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
-    let ab: Rectangle = a.getBounds();
-    let bb: Rectangle = b.getBounds();
-    return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
-};
+// let isColliding = (a: CoconutLikeObject, b: Sprite = tajika): boolean => {
+//     let ab: Rectangle = a.typeOfCoconut.getBounds();
+//     let bb: Rectangle = b.getBounds();
+//     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
+// };
 
 
 // timer has to be 300 or else the loop resets too fast and the coconuts teleport to different
@@ -196,6 +189,26 @@ app.ticker.add((delta: number): void => {
     // }
     u++;
 
+    // let isColliding = (a: CoconutLikeObject, b: Sprite = tajika): boolean => {
+    //     let xFallingObject = a.typeOfCoconut.x;
+    //     let yFallingObject = a.typeOfCoconut.y;
+    //     let xTajika = b.x;
+    //     // let yTajika = b.y; always 230
+    //     let xDelta = xFallingObject - xTajika;
+    //     let yDelta = yFallingObject - 230;
+    //     if (xDelta < 20 || xDelta > -20) {
+    //         if () {
+    //             return true;
+    //         }
+    //     } 
+    //     // let ab: Rectangle = a.typeOfCoconut.getBounds();
+    //     // let bb: Rectangle = b.getBounds();
+    //     // return false;
+    //     // return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
+    //     return false;
+    // };
+
+
     for (let j: number = 0; j < bc.length; j++) {
         // sets the constant to equal to the object at index i, so it's changing coco by moving through
         // each index of the array
@@ -206,25 +219,27 @@ app.ticker.add((delta: number): void => {
         // PUT THE IS COLLIDING STATEMENTS HERE
 
         // removes sprite object once it's below screen
-        if (coco.typeOfCoconut.y >= 512) {
-            app.stage.removeChild(coco[j]);
+        // if (isColliding(coco[j], tajika)) {
+        //     // app.stage.removeChild(coco[j]);
+        //     return false;
+        // if (isColliding(coco[j], tajika)) {
+        //     app.stage.removeChild(coco[j]);
+        // }  
+
+        let xFallingObject = coco.typeOfCoconut.x;
+        let yFallingObject = coco.typeOfCoconut.y;
+        let xTajika = tajika.x;
+        // let yTajika = 230; // mentioned above when Tajika was first rendered on the screen
+        // let xDelta = xFallingObject - xTajika;
+        // let yDelta = (yFallingObject - yTajika);
+        // if (xFallingObject < xTajika + 50 && xFallingObject > xTajika - 50) {
+        if (xFallingObject < xTajika + 100 && xFallingObject > xTajika - 100 ) {
+            if (yFallingObject < 245 && yFallingObject > 215) {
+            app.stage.removeChild(coco.typeOfCoconut);
+            }
+        } else if (yFallingObject >= 512) {
+            app.stage.removeChild(coco.typeOfCoconut);
         }
     }
-
-    // let soundsGood: HTMLElement = document.getElementById("clickForMusic") as HTMLElement;
-
-
-    // window.onclick = (event: MouseEvent): void => {
-    //     let sound = new Howl({src:("./Africa8Bit.mp3")});
-    //     sound.play();
-    // };
-
-
-
-
-
-
-
-
 
 });
