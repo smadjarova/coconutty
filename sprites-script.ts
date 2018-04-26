@@ -32,6 +32,10 @@ import {
 } from "pixi.js";
 
 
+let points: number = 0;
+let pointCounter = document.getElementById("mypoints") as HTMLSpanElement;
+let pointAllowed: boolean = true;
+
 // creates backgrounds & dimensions
 const app: Application = new Application(960, 480);
 document.body.appendChild(app.view);
@@ -161,7 +165,7 @@ app.ticker.add((delta: number): void => {
             app.stage.addChild(coconutBrown.typeOfCoconut);
             bc[i] = coconutBrown;
             bc[i].typeOfCoconut.x = randomxValue;
-            // add brown cocunut to bc  
+            // add brown coconut to bc  
         } else if (numberarray[randomnum] === 1) {
             app.stage.addChild(coconutBowlingBall.typeOfCoconut);
             bc[i] = coconutBowlingBall;
@@ -186,28 +190,9 @@ app.ticker.add((delta: number): void => {
         i++;
         u = 0;
     }
-    // }
     u++;
-
-    // let isColliding = (a: CoconutLikeObject, b: Sprite = tajika): boolean => {
-    //     let xFallingObject = a.typeOfCoconut.x;
-    //     let yFallingObject = a.typeOfCoconut.y;
-    //     let xTajika = b.x;
-    //     // let yTajika = b.y; always 230
-    //     let xDelta = xFallingObject - xTajika;
-    //     let yDelta = yFallingObject - 230;
-    //     if (xDelta < 20 || xDelta > -20) {
-    //         if () {
-    //             return true;
-    //         }
-    //     } 
-    //     // let ab: Rectangle = a.typeOfCoconut.getBounds();
-    //     // let bb: Rectangle = b.getBounds();
-    //     // return false;
-    //     // return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
-    //     return false;
-    // };
-
+    
+    
 
     for (let j: number = 0; j < bc.length; j++) {
         // sets the constant to equal to the object at index i, so it's changing coco by moving through
@@ -217,29 +202,22 @@ app.ticker.add((delta: number): void => {
         coco.typeOfCoconut.y += 1.75 * coco.direction;
 
         // PUT THE IS COLLIDING STATEMENTS HERE
-
-        // removes sprite object once it's below screen
-        // if (isColliding(coco[j], tajika)) {
-        //     // app.stage.removeChild(coco[j]);
-        //     return false;
-        // if (isColliding(coco[j], tajika)) {
-        //     app.stage.removeChild(coco[j]);
-        // }  
-
         let xFallingObject = coco.typeOfCoconut.x;
         let yFallingObject = coco.typeOfCoconut.y;
         let xTajika = tajika.x;
-        // let yTajika = 230; // mentioned above when Tajika was first rendered on the screen
-        // let xDelta = xFallingObject - xTajika;
-        // let yDelta = (yFallingObject - yTajika);
-        // if (xFallingObject < xTajika + 50 && xFallingObject > xTajika - 50) {
+        
         if (xFallingObject < xTajika + 100 && xFallingObject > xTajika - 100 ) {
             if (yFallingObject < 245 && yFallingObject > 215) {
             app.stage.removeChild(coco.typeOfCoconut);
+            // pointCounter.textContent = "Points:" + points.text.value + 5; 
+            if (pointAllowed) {
+                points += 5;
+                pointAllowed = false;
             }
-        } else if (yFallingObject >= 512) {
+        } else if (yFallingObject >= 512 && yFallingObject <= 536) {
             app.stage.removeChild(coco.typeOfCoconut);
+            pointAllowed = true;
         }
     }
-
+    pointCounter.textContent = "Points: " + points;
 });
