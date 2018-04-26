@@ -191,8 +191,8 @@ app.ticker.add((delta: number): void => {
         u = 0;
     }
     u++;
-    
-    
+
+
 
     for (let j: number = 0; j < bc.length; j++) {
         // sets the constant to equal to the object at index i, so it's changing coco by moving through
@@ -205,19 +205,37 @@ app.ticker.add((delta: number): void => {
         let xFallingObject = coco.typeOfCoconut.x;
         let yFallingObject = coco.typeOfCoconut.y;
         let xTajika = tajika.x;
-        
-        if (xFallingObject < xTajika + 100 && xFallingObject > xTajika - 100 ) {
+
+        if (xFallingObject < xTajika + 100 && xFallingObject > xTajika - 100) {
             if (yFallingObject < 245 && yFallingObject > 215) {
-            app.stage.removeChild(coco.typeOfCoconut);
-            // pointCounter.textContent = "Points:" + points.text.value + 5; 
-            if (pointAllowed) {
-                points += 5;
-                pointAllowed = false;
+                app.stage.removeChild(coco.typeOfCoconut);
+                // pointCounter.textContent = "Points:" + points.text.value + 5; 
+                if (pointAllowed) {
+                    if (coco.numberOfCoconut === 0) {
+                        points += 5;
+                        pointAllowed = false;
+                    } else if (coco.numberOfCoconut === 1) {
+                        points -= 10;
+                        pointAllowed = false;
+                    } else if (coco.numberOfCoconut === 2) {
+                        points = 0;
+                        pointAllowed = false;
+                    } else if (coco.numberOfCoconut === 3) {
+                        points += 5;
+                    }
+                }
+            } else if (yFallingObject >= 512 && yFallingObject <= 536) {
+                app.stage.removeChild(coco.typeOfCoconut);
+                pointAllowed = true;
             }
-        } else if (yFallingObject >= 512 && yFallingObject <= 536) {
-            app.stage.removeChild(coco.typeOfCoconut);
-            pointAllowed = true;
         }
+        pointCounter.textContent = "Points: " + points;
     }
-    pointCounter.textContent = "Points: " + points;
 });
+
+    /*
+    coconut = +5
+    bowlingball = -20
+    golden = +200
+    pokeball = easter egg (drop from the sun on mouse event)
+    */
