@@ -1,25 +1,3 @@
-// Objectives: 
-// 1: Make the objects generate one at a time [done]
-// 1.5: To make the objects generate multiple times, instead of just random order of the 5 objects.
-// 2: Make hitboxes
-// 3: Put a score board
-
-/* Bug found:
- Won't keep randomly generating after all 5 are done
-
- Possible solution:
- Create an array of randomly generated numbers and 
- then using a for loop to run through each item in it and create a new sprite
- to create rarities put an && and depend on the index number 
-
- Bug found with solution:
- Because the for loop is /inside/ the for loop that slows down the ticker app
- and making it create 100 objects then create 100 objects in less than a second is a problem
-
- Possible solution:
- Sync the for loop for creating the variables with the ticker app
-*/
-
 
 import {
     Sprite,
@@ -31,10 +9,19 @@ import {
     ticker,
 } from "pixi.js";
 
-
+// Global variables relating to points
 let points: number = 0;
 let pointCounter = document.getElementById("mypoints") as HTMLSpanElement;
 let pointAllowed: boolean = true;
+// Global variables relating to random x values at which CoconutLikeObject will fall 
+let minchangex = 150;
+let maxchangex = 850;
+let randomxValue1: number = Math.floor(Math.random() * Math.floor(maxchangex));
+let randomxValue2: number = Math.floor(Math.random() * Math.floor(maxchangex));
+let randomxValue3: number = Math.floor(Math.random() * Math.floor(maxchangex));
+let randomxValue4: number = Math.floor(Math.random() * Math.floor(maxchangex));
+let randomxValue5: number = Math.floor(Math.random() * Math.floor(maxchangex));
+
 
 // creates backgrounds & dimensions
 const app: Application = new Application(960, 480);
@@ -59,7 +46,7 @@ window.onkeydown = (e: KeyboardEvent): void => {
     // set up constants that equal to arrow key movements
     const LEFT: number = 37;
     const RIGHT: number = 39;
-    const STEP: number = 20;
+    const STEP: number = 50;
     // if then statement that dictates x movement depending on input
     if (e.keyCode === LEFT) {
         tajika.x -= STEP;
@@ -87,107 +74,56 @@ class CoconutLikeObject {
 }
 // creates new Brown Coconut
 let coconutBrown = new CoconutLikeObject(0, "./coconutBrown.png");
-coconutBrown.typeOfCoconut.x = 450;
-coconutBrown.typeOfCoconut.y = 0;
 
 // creates Bowling Ball
 let coconutBowlingBall = new CoconutLikeObject(1, "./coconutBowlingBall.png");
-coconutBowlingBall.typeOfCoconut.x = 400;
-coconutBowlingBall.typeOfCoconut.y = 0;
-
 
 // creates CoconutBomb
 let coconutBomb = new CoconutLikeObject(2, "./coconutBomb.png");
-coconutBomb.typeOfCoconut.x = 350;
-coconutBomb.typeOfCoconut.y = 0;
-
 
 // creates coconutGolden
 let coconutGolden = new CoconutLikeObject(3, "./coconutGolden.png");
-coconutGolden.typeOfCoconut.x = 300;
-coconutGolden.typeOfCoconut.y = 0;
 
-// creates coconutPokeball
+// creates coconutPokeball // meant to be an Easter egg (dropping if sun is clicked) but game is not complete enough to add this
 let coconutPokeball = new CoconutLikeObject(4, "./coconutPokeball.png");
-coconutPokeball.typeOfCoconut.x = 250;
-coconutPokeball.typeOfCoconut.y = 0;
 
 // creates array that houses all the coconut objects
 let bc: CoconutLikeObject[] = [];
 
-// commented out code was to slow down the ticker app, did not work
-// app.ticker.speed = 1/1000;
-// app.ticker.minFPS = 900000;
-
-// works for index
-let i = 0;
 // counter variable that slows down how app ticker runs the coconut creator/ dictates x coordinates
 let u = 0;
 
-// supposed to be for creating hitboxes, but unsure how to implement it
-// let isColliding = (a: CoconutLikeObject, b: Sprite = tajika): boolean => {
-//     let ab: Rectangle = a.typeOfCoconut.getBounds();
-//     let bb: Rectangle = b.getBounds();
-//     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
-// };
 
-
-// timer has to be 300 or else the loop resets too fast and the coconuts teleport to different
+// timer has to be 300 or else the loop resets too fast and the coconuts teleport to different locations before falling off the screen entirely
 app.ticker.add((delta: number): void => {
-    /* commented out code was an attempt to work through the array of numbers
-     to generate new objects */
-    // for (let i = 0; i <= 100; i++) {
+    app.ticker.speed = .25;
     let numberarray: number[] = [];
+    // max and min set the possible coconuts to be called 
     let maxnum = 5;
     let minnum = 0;
-    let minchangex = 20;
-    let maxchangex = 940;
+    let randomcoconutValue: number = Math.floor(Math.random() * Math.floor(maxnum)) - 1;
     if (u >= 300) {
-        // creates random varibales for the coconut types     
-        for (let z = 0; z < 100; z++) {
-            let randomcoconutValue: number = Math.floor(Math.random() * Math.floor(maxnum));
-            numberarray[z] = randomcoconutValue;
-        }
-
-        // creates random variables for the x position
-        /* Rohaid Note: Changed the min/max values so that the image didn't show up outside of screen
-         I changed the random function from info I found online about the Math.random function
-         It slims down the function and requires less variables, so the code becomes less difficult to tangle
-         through */
-        let randomxValue: number = Math.floor(Math.random() * Math.floor(maxchangex));
-
-        // an attempt to create a random # as an index for the random # array for coconut type #
-        let randomnum: number = Math.floor(Math.random() * Math.floor(101));
-
-        /* set the if then statement to use the random num created
-           unfortunately, it hasn't fixed the problem */
-        if (numberarray[randomnum] === 0) {
+        if (randomcoconutValue === 0) {
             app.stage.addChild(coconutBrown.typeOfCoconut);
-            bc[i] = coconutBrown;
-            bc[i].typeOfCoconut.x = randomxValue;
-            // add brown coconut to bc  
-        } else if (numberarray[randomnum] === 1) {
+            bc[bc.length] = coconutBrown;
+            bc[bc.length - 1].typeOfCoconut.x = randomxValue1;
+        } else if (randomcoconutValue === 1) {
             app.stage.addChild(coconutBowlingBall.typeOfCoconut);
-            bc[i] = coconutBowlingBall;
-            bc[i].typeOfCoconut.x = randomxValue;
-        } else if (numberarray[randomnum] === 2) {
+            bc[bc.length] = coconutBowlingBall;
+            bc[bc.length - 1].typeOfCoconut.x = randomxValue2;
+        } else if (randomcoconutValue === 2) {
             app.stage.addChild(coconutBomb.typeOfCoconut);
-            bc[i] = coconutBomb;
-            bc[i].typeOfCoconut.x = randomxValue;
-        } else if (numberarray[randomnum] === 3) {
+            bc[bc.length] = coconutBomb;
+            bc[bc.length - 1].typeOfCoconut.x = randomxValue3;
+        } else if (randomcoconutValue === 3) {
             app.stage.addChild(coconutGolden.typeOfCoconut);
-            bc[i] = coconutGolden;
-            bc[i].typeOfCoconut.x = randomxValue;
-        } else if (numberarray[randomnum] === 4) {
+            bc[bc.length] = coconutGolden;
+            bc[bc.length - 1].typeOfCoconut.x = randomxValue4;
+        } else if (randomcoconutValue === 4) {
             app.stage.addChild(coconutPokeball.typeOfCoconut);
-            bc[i] = coconutPokeball;
-            bc[i].typeOfCoconut.x = randomxValue;
+            bc[bc.length] = coconutPokeball;
+            bc[bc.length - 1].typeOfCoconut.x = randomxValue5;
         }
-
-        // commented out code but I don't know what it does
-        // bc[bc.length] = coconut;
-
-        i++;
         u = 0;
     }
     u++;
@@ -199,32 +135,43 @@ app.ticker.add((delta: number): void => {
         // each index of the array
         const coco: CoconutLikeObject = bc[j];
         // takes the individual object in the Coconut array and then takes the direction and subtracts 5 each time
-        coco.typeOfCoconut.y += 1.75 * coco.direction;
+        coco.typeOfCoconut.y += 2 * coco.direction;
 
         // PUT THE IS COLLIDING STATEMENTS HERE
         let xFallingObject = coco.typeOfCoconut.x;
         let yFallingObject = coco.typeOfCoconut.y;
         let xTajika = tajika.x;
 
-        if (xFallingObject < xTajika + 100 && xFallingObject > xTajika - 100) {
-            if (yFallingObject < 245 && yFallingObject > 215) {
-                app.stage.removeChild(coco.typeOfCoconut);
-                // pointCounter.textContent = "Points:" + points.text.value + 5; 
+        // "Hit boxes" and point assignment
+        // og coconut = +5
+        // bowling ball = -5
+        // golden coconut = +5 as many times as the ticker runs (ticks * 5)
+        // bomb = -5 in the same way as teh golden coconut works 
+        let message: Text = new Text("hit box worked");
+        if (xFallingObject < xTajika + 120 && xFallingObject > xTajika - 25) {
+            if (yFallingObject > 215 && yFallingObject < 245) {
                 if (pointAllowed) {
                     if (coco.numberOfCoconut === 0) {
+                        app.stage.removeChild(coco.typeOfCoconut);
                         points += 5;
                         pointAllowed = false;
+                        yFallingObject = 0;
                     } else if (coco.numberOfCoconut === 1) {
-                        points -= 10;
+                        app.stage.removeChild(coco.typeOfCoconut);
+                        points -= 5;
                         pointAllowed = false;
+                        yFallingObject = 0;
                     } else if (coco.numberOfCoconut === 2) {
-                        points = 0;
-                        pointAllowed = false;
+                        app.stage.removeChild(coco.typeOfCoconut);
+                        points -= 5;
+                        yFallingObject = 0;
                     } else if (coco.numberOfCoconut === 3) {
+                        app.stage.removeChild(coco.typeOfCoconut);
                         points += 5;
+                        yFallingObject = 0;
                     }
                 }
-            } else if (yFallingObject >= 512 && yFallingObject <= 536) {
+            } else if (yFallingObject >= 300) {
                 app.stage.removeChild(coco.typeOfCoconut);
                 pointAllowed = true;
             }
@@ -233,9 +180,3 @@ app.ticker.add((delta: number): void => {
     }
 });
 
-    /*
-    coconut = +5
-    bowlingball = -20
-    golden = +200
-    pokeball = easter egg (drop from the sun on mouse event)
-    */
